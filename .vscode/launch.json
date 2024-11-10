@@ -39,6 +39,14 @@
             "mainClass": "ErrorStatistic",
             "projectName": "Apache-log-Analysis_36fd119b",
             "args": "input output"
+        },
+        {
+            "type": "java",
+            "name": "TimeStatistic",
+            "request": "launch",
+            "mainClass": "TimeStatistic",
+            "projectName": "Apache-log-Analysis_36fd119b",
+            "args": "input output"
         }
     ]
 }
