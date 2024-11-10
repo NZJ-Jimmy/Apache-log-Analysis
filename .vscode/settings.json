@@ -1,0 +1,14 @@
+{
+    "java.project.sourcePaths": [
+        "src"
+    ],
+    "java.project.referencedLibraries": [
+        "/usr/local/hadoop/share/hadoop/common/hadoop-nfs-3.4.0.jar",
+        "/usr/local/hadoop/share/hadoop/common/hadoop-common-3.4.0.jar",
+        "/usr/local/hadoop/share/hadoop/common/lib/*.jar",
+        "/usr/local/hadoop/share/hadoop/mapreduce/*.jar",
+        "/usr/local/hadoop/share/hadoop/yarn/*.jar",
+        "/usr/local/hadoop/share/hadoop/hdfs/*.jar",
+    ],
+    "java.format.settings.url": ".vscode/java-formatter.xml"
+}
