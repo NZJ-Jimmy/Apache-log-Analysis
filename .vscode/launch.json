@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "Apache-log-Analysis_36fd119b"
+        },
+        {
+            "type": "java",
             "name": "Launch with Arguments Prompt",
             "request": "launch",
             "mainClass": "",
@@ -22,6 +29,14 @@
             "name": "WordCount",
             "request": "launch",
             "mainClass": "WordCount",
+            "projectName": "Apache-log-Analysis_36fd119b",
+            "args": "input output"
+        },
+        {
+            "type": "java",
+            "name": "ErrorStatistic",
+            "request": "launch",
+            "mainClass": "ErrorStatistic",
             "projectName": "Apache-log-Analysis_36fd119b",
             "args": "input output"
         }

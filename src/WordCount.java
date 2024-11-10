@@ -14,30 +14,33 @@ import org.apache.hadoop.util.GenericOptionsParser;
 public class WordCount {
 
     /**
-     * MyMapper is a Mapper class that extends the Hadoop Mapper class.
-     * It processes input key-value pairs to generate a set of intermediate key-value pairs.
+     * MyMapper is a Mapper class that extends the Hadoop Mapper class. It processes
+     * input key-value pairs to generate a set of intermediate key-value pairs.
      * 
-     * The map method takes an input key-value pair and tokenizes the value (which is a line of text).
-     * For each token (word) in the line, it writes the word and a count of one to the context.
+     * The map method takes an input key-value pair and tokenizes the value (which
+     * is a line of text). For each token (word) in the line, it writes the word and
+     * a count of one to the context.
      * 
-     * Key: Object (input key, not used in this implementation)
-     * Value: Text (a line of text from the input)
+     * Key: Object (input key, not used in this implementation) Value: Text (a line
+     * of text from the input)
      * 
-     * Output Key: Text (a word from the input line)
-     * Output Value: IntWritable (the count of the word, which is always 1 in this case)
+     * Output Key: Text (a word from the input line) Output Value: IntWritable (the
+     * count of the word, which is always 1 in this case)
      * 
-     * @param key the input key (not used in this implementation)
-     * @param value the input value (a line of text)
+     * @param key     the input key (not used in this implementation)
+     * @param value   the input value (a line of text)
      * @param context the context to write the output key-value pairs
      */
-    public static class MyMapper extends Mapper<Object, Text, Text, IntWritable> {
+    private static class MyMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
             while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
+                String token = itr.nextToken();
+                token = token.replaceAll("^[\\pP]+|[\\pP]+$", "").toLowerCase(); // remove punctuations, to lowercase
+                word.set(token);
                 context.write(word, one);
             }
         }
@@ -46,13 +49,15 @@ public class WordCount {
     /**
      * A Reducer class that extends the Hadoop Reducer class.
      * 
-     * The reduce method sums up all the IntWritable values associated with a given key and writes the key and the sum to the context.
+     * The reduce method sums up all the IntWritable values associated with a given
+     * key and writes the key and the sum to the context.
      * 
-     * @param key The input key.
-     * @param values An iterable list of IntWritable values associated with the key.
+     * @param key     The input key.
+     * @param values  An iterable list of IntWritable values associated with the
+     *                key.
      * @param context The context to write the output key-value pair.
      */
-    public static class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    private static class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private IntWritable result = new IntWritable();
 
         public void reduce(Text key, Iterable<IntWritable> values, Context context)
@@ -73,7 +78,7 @@ public class WordCount {
      * data transferred across the network. Accelarates the process of reducing the
      * data.
      */
-    public static class MyCombiner extends MyReducer {
+    private static class MyCombiner extends MyReducer {
     }
 
     /**
