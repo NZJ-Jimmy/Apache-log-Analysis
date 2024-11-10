@@ -74,7 +74,6 @@ public class TimeStatistic {
         job.setReducerClass(MyReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        job.setOutputFormatClass(MyOutputFormat.class);
         FileInputFormat.addInputPath(job, input);
         FileOutputFormat.setOutputPath(job, output);
         return job;
