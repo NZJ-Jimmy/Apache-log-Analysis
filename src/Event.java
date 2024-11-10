@@ -10,7 +10,7 @@ public class Event {
         E1("jk2_init\\(\\) Found child \\S+ in scoreboard slot \\S+"), E2("workerEnv\\.init\\(\\) ok \\S+"),
         E3("mod_jk child workerEnv in error state \\S+"),
         E4("\\[client \\S+\\] Directory index forbidden by rule: \\S+"),
-        E5("jk2_init\\(\\) Can't find child \\S+ in scoreboard"), E6("mod_jk child init \\S+ \\S+");
+        E5("jk2_init\\(\\) Can't find child \\S+ in scoreboard"), E6("mod_jk child init \\S+ \\S+"), OTHER(".*");
 
         private final String regex;
 
