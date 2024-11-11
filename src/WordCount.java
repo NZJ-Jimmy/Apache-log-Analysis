@@ -11,35 +11,47 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+/**
+ * A Hadoop MapReduce to count the number of each word in logs.
+ */
 public class WordCount {
 
     /**
-     * MyMapper is a Mapper class that extends the Hadoop Mapper class. It processes
-     * input key-value pairs to generate a set of intermediate key-value pairs.
+     * <p>
+     * <code>MyMapper</code> is a <code>Mapper</code> class that extends the Hadoop
+     * Mapper class. It processes input key-value pairs to generate a set of
+     * intermediate key-value pairs.
+     * </p>
      * 
-     * The map method takes an input key-value pair and tokenizes the value (which
-     * is a line of text). For each token (word) in the line, it writes the word and
-     * a count of one to the context.
+     * <p>
+     * The <code>map</code> method takes an input key-value pair and tokenizes the
+     * value (which is a line of text). For each token (word) in the line, it writes
+     * the word and a count of one to the context.
+     * </p>
      * 
-     * Key: Object (input key, not used in this implementation) Value: Text (a line
-     * of text from the input)
+     * <p>
+     * Key: <code>Object</code> (not used in this implementation) Value:
+     * <code>Text</code> (a line of text from the input)
+     * </p>
      * 
-     * Output Key: Text (a word from the input line) Output Value: IntWritable (the
-     * count of the word, which is always 1 in this case)
-     * 
-     * @param key     the input key (not used in this implementation)
-     * @param value   the input value (a line of text)
-     * @param context the context to write the output key-value pairs
+     * <p>
+     * Output Key: <code>Text</code> (a word from the input line) Output Value:
+     * <code>IntWritable</code> (the count of the word, which is always 1 in this
+     * case)
+     * </p>
      */
     private static class MyMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
         private Text word = new Text();
 
+        @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
             while (itr.hasMoreTokens()) {
                 String token = itr.nextToken();
                 token = token.replaceAll("^[\\pP]+|[\\pP]+$", "").toLowerCase(); // remove punctuations, to lowercase
+                if (token.isEmpty() || Character.isDigit(token.charAt(0))) // ignore empty strings and numbers
+                    continue;
                 word.set(token);
                 context.write(word, one);
             }
@@ -47,19 +59,30 @@ public class WordCount {
     }
 
     /**
-     * A Reducer class that extends the Hadoop Reducer class.
+     * <p>
+     * A Reducer class that extends the Hadoop Reducer class. It processes a set of
+     * intermediate key-value pairs to generate a set of output key-value pairs.
+     * </p>
      * 
-     * The reduce method sums up all the IntWritable values associated with a given
-     * key and writes the key and the sum to the context.
+     * <p>
+     * The <code>reduce</code> method sums up all the IntWritable values associated
+     * with a given key and writes the key and the sum to the context.
+     * </p>
      * 
-     * @param key     The input key.
-     * @param values  An iterable list of IntWritable values associated with the
-     *                key.
-     * @param context The context to write the output key-value pair.
+     * <p>
+     * Key: Text (a word from the input line) Value: IntWritable (the count of the
+     * word, which is always 1 in this case)
+     * </p>
+     * 
+     * <p>
+     * Output Key: Text (a word from the input line) Output Value: IntWritable (the
+     * total count of the word)
+     * </p>
      */
     private static class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         private IntWritable result = new IntWritable();
 
+        @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context)
                 throws IOException, InterruptedException {
             int sum = 0;

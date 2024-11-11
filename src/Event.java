@@ -1,16 +1,20 @@
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.regex.*;
 
-import org.apache.hadoop.io.Writable;
 
-public class Event implements Writable {
+/**
+ * The Event class represents a log event with a specific time, level, content, and event ID.
+ * It parses a log line to extract these details and determine the event ID based on predefined patterns.
+ */
+public class Event {
     private String time;
     private String level;
     private String content;
     private EventId eventId;
 
+    /**
+     * Enum representing various event identifiers with their associated regular expressions.
+     * Each event identifier corresponds to a specific log pattern.
+     */
     public enum EventId {
         E1("jk2_init\\(\\) Found child \\S+ in scoreboard slot \\S+"), E2("workerEnv\\.init\\(\\) ok \\S+"),
         E3("mod_jk child workerEnv in error state \\S+"),
@@ -29,6 +33,19 @@ public class Event implements Writable {
 
     }
 
+    /**
+     * Constructs an Event object by parsing a log line.
+     *
+     * @param line the log line to be parsed
+     * 
+     * The log line is expected to be in the format:
+     * [time] [level] content
+     * 
+     * The constructor uses a regular expression to extract these components
+     * and assigns them to the corresponding fields. It also attempts to match
+     * the content against predefined event types (EventId) and assigns the
+     * matching event type to the eventId field.
+     */
     Event(String line) {
         final Pattern pattern = Pattern.compile("\\[(.*?)\\] \\[(.*?)\\] (.*)");
         final Matcher matcher = pattern.matcher(line);
@@ -46,6 +63,11 @@ public class Event implements Writable {
         }
     }
 
+    /**
+     * Checks if the event has been parsed successfully.
+     * 
+     * @return true if all required fields (time, level, content, eventId) are not null, false otherwise.
+     */
     public Boolean isParsed() {
         if (time == null || level == null || content == null || eventId == null) {
             return false;
@@ -67,29 +89,5 @@ public class Event implements Writable {
 
     public EventId gerEventId() {
         return eventId;
-    }
-
-    @Override
-    public void write(DataOutput out) throws IOException {
-        out.writeUTF(time);
-        out.writeUTF(level);
-        out.writeUTF(content);
-        out.writeUTF(eventId.toString());
-    }
-
-    @Override
-    public void readFields(DataInput in) throws IOException {
-        time = in.readUTF();
-        level = in.readUTF();
-        content = in.readUTF();
-        eventId = EventId.valueOf(in.readUTF());
-    }
-
-    @Override
-    public String toString() {
-        return isParsed()
-                ? time + "," + level + "," + content + "," + eventId.name() + ","
-                        + eventId.getRegex().replaceAll("\\\\S\\+", "<*>")
-                : "Unparsed";
     }
 }
