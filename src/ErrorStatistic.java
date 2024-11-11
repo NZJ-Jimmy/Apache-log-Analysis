@@ -20,20 +20,16 @@ public class ErrorStatistic {
         private Text errorType = new Text();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            StringReader stringReader = new StringReader(value.toString());
-            BufferedReader bufferedReader = new BufferedReader(stringReader);
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                Event event = new Event(line);
-                if (event.isParsed()) {
-                    if (event.getType().equals("error")) {
-                        errorType.set(event.gerEventId().toString());
-                        context.write(errorType, one);
-                    }
-                } else {
-                    errorType.set("OTHER");
+            String line = value.toString();
+            Event event = new Event(line);
+            if (event.isParsed()) {
+                if (event.getType().equals("error")) {
+                    errorType.set(event.gerEventId().toString());
                     context.write(errorType, one);
                 }
+            } else {
+                errorType.set("OTHER");
+                context.write(errorType, one);
             }
         }
     }
