@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -23,7 +21,7 @@ public class ErrorStatistic {
             String line = value.toString();
             Event event = new Event(line);
             if (event.isParsed()) {
-                if (event.getType().equals("error")) {
+                if (event.getLevel().equals("error")) {
                     errorType.set(event.gerEventId().toString());
                     context.write(errorType, one);
                 }

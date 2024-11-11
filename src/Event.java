@@ -1,9 +1,14 @@
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.regex.*;
 
-public class Event {
-    private String date;
-    private String type;
-    private String message;
+import org.apache.hadoop.io.Writable;
+
+public class Event implements Writable {
+    private String time;
+    private String level;
+    private String content;
     private EventId eventId;
 
     public enum EventId {
@@ -29,11 +34,11 @@ public class Event {
         final Matcher matcher = pattern.matcher(line);
 
         if (matcher.find()) {
-            date = matcher.group(1);
-            type = matcher.group(2);
-            message = matcher.group(3);
+            time = matcher.group(1);
+            level = matcher.group(2);
+            content = matcher.group(3);
             for (EventId eventType : EventId.values()) {
-                if (message.matches(eventType.getRegex())) {
+                if (content.matches(eventType.getRegex())) {
                     eventId = eventType;
                     break;
                 }
@@ -42,25 +47,49 @@ public class Event {
     }
 
     public Boolean isParsed() {
-        if (date == null || type == null || message == null || eventId == null) {
+        if (time == null || level == null || content == null || eventId == null) {
             return false;
         }
         return true;
     }
 
-    public String getDate() {
-        return date;
+    public String getTime() {
+        return time;
     }
 
-    public String getMessage() {
-        return message;
+    public String getContent() {
+        return content;
     }
 
-    public String getType() {
-        return type;
+    public String getLevel() {
+        return level;
     }
 
     public EventId gerEventId() {
         return eventId;
+    }
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        out.writeUTF(time);
+        out.writeUTF(level);
+        out.writeUTF(content);
+        out.writeUTF(eventId.toString());
+    }
+
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        time = in.readUTF();
+        level = in.readUTF();
+        content = in.readUTF();
+        eventId = EventId.valueOf(in.readUTF());
+    }
+
+    @Override
+    public String toString() {
+        return isParsed()
+                ? time + "," + level + "," + content + "," + eventId.name() + ","
+                        + eventId.getRegex().replaceAll("\\\\S\\+", "<*>")
+                : "Unparsed";
     }
 }

@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.regex.*;
 
 import org.apache.hadoop.conf.Configuration;
@@ -28,7 +26,7 @@ public class TimeStatistic {
             String line = value.toString();
             Event event = new Event(line);
             if (event.isParsed()) {
-                final Matcher matcher = pattern.matcher(line);
+                final Matcher matcher = pattern.matcher(event.getTime());
                 if (matcher.find()) {
                     timeWeekDay.set("Week Day: " + matcher.group(1));
                     timeMonth.set("Month: " + matcher.group(2));

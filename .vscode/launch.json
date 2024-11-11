@@ -4,6 +4,14 @@
     // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "type": "java",
+            "name": "TimeStatistic2",
+            "request": "launch",
+            "mainClass": "TimeStatistic2",
+            "projectName": "Apache-log-Analysis_36fd119b"
+        },
         {
             "type": "java",
             "name": "test",
@@ -45,6 +53,14 @@
             "name": "TimeStatistic",
             "request": "launch",
             "mainClass": "TimeStatistic",
+            "projectName": "Apache-log-Analysis_36fd119b",
+            "args": "input output"
+        },
+        {
+            "type": "java",
+            "name": "CsvStructuring",
+            "request": "launch",
+            "mainClass": "CsvStructuring",
             "projectName": "Apache-log-Analysis_36fd119b",
             "args": "input output"
         }
