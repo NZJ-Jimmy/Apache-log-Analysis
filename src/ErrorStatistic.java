@@ -25,9 +25,8 @@ public class ErrorStatistic {
      * <p>
      * The <code>map</code> method processes each line of the input, parses it into
      * an Event object, and checks if the event is parsed successfully. If the event
-     * level is "<code>error</code>", it writes the event ID as the key and the
-     * value 1 to the context. If the event is not parsed successfully, it writes
-     * "<code>OTHER</code>" as the key.
+     * is parsed successfully, the method sets the event level as the output key and
+     * writes the key-value pair to the context. Else, the method ignores the event.
      * </p>
      * 
      * <p>
@@ -36,25 +35,22 @@ public class ErrorStatistic {
      * </p>
      * 
      * <p>
-     * Output Key: Text (the event ID or "<code>OTHER</code>") Output Value:
+     * Output Key: 
+     * Text (the event level)
+     * Output Value:
      * IntWritable (the count of the event, which is always 1 in this case)
      * </p>
      */
     private static class MyMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
-        private Text errorType = new Text();
+        private Text eventLevel = new Text();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
             Event event = new Event(line);
             if (event.isParsed()) {
-                if (event.getLevel().equals("error")) {
-                    errorType.set(event.gerEventId().toString());
-                    context.write(errorType, one);
-                }
-            } else {
-                errorType.set("OTHER");
-                context.write(errorType, one);
+                eventLevel.set(event.getLevel());
+                context.write(eventLevel, one);
             }
         }
     }
@@ -72,12 +68,12 @@ public class ErrorStatistic {
      * </p>
      * 
      * <p>
-     * Input Key: Text (the event ID or "OTHER") Input Value: IntWritable (the count
+     * Input Key: Text (the event level) Input Value: IntWritable (the count
      * of the event)
      * </p>
      * 
      * <p>
-     * Output Key: Text (the event ID or "OTHER") Output Value: IntWritable (the
+     * Output Key: Text (the event level) Output Value: IntWritable (the
      * total count of the event)
      * </p>
      */
