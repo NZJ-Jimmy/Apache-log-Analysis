@@ -43,7 +43,7 @@ public class TimeStatistic {
     private static class MyMapper extends Mapper<Object, Text, Text, IntWritable> {
         private final static IntWritable one = new IntWritable(1);
         private static final Pattern pattern = Pattern
-                .compile("\\[([A-Za-z]+) ([A-Za-z]+) (\\d{2}) (\\d{2}):\\d{2}:\\d{2} \\d{4}\\]");
+                .compile("([A-Za-z]+) ([A-Za-z]+) (\\d{2}) (\\d{2}):\\d{2}:\\d{2} \\d{4}");
         private Text timeHour = new Text();
         private Text timeDay = new Text();
         private Text timeWeekDay = new Text();

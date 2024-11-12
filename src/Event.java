@@ -75,6 +75,19 @@ public class Event {
         return true;
     }
 
+    /**
+     * Returns a string representation of the Event object in CSV format.
+     * 
+     * @return a string representation of the Event object.
+     */
+    @Override
+    public String toString() {
+        return isParsed()
+                ? time + "," + level + "," + content + "," + eventId.name() + ","
+                        + eventId.getRegex().replaceAll("\\\\S\\+", "<*>")
+                : "Unparsed";
+    }
+
     public String getTime() {
         return time;
     }
